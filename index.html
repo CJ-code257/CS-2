@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+  <h2>Appointment Booking Form</h2>
+
+  <form onsubmit="return printSummary()">
+
+    <label for="patientName">Patient Name:</label>
+    <input type="text" id="patientName" required /><br>
+
+    <label for="idNumber">ID #:</label>
+    <input type="text" id="idNumber" placeholder="NA for Regular" required /><br><br>
+
+    <label for="service">Service:</label>
+    <select id="service">
+      <option value="Dental Check-up">Dental Check-up (PHP 850)</option>
+      <option value="Eye Check-up">Eye Check-up (PHP 900)</option>
+      <option value="Physical Exam">Physical Exam (PHP 800)</option>
+    </select><br>
+
+    <label for="sessions">Sessions (Max of 3):</label>
+    <input type="number" id="sessions" min="1" max="3" placeholder ="0" required /><br><br>
+
+    <label for="custType">Customer Type:</label>
+    <select id="custType">
+      <option value="Regular">Regular</option>
+      <option value="PWD/Senior">PWD/Senior</option>
+    </select><br><br>
+
+    <input type="submit" value="Book Appointment" />
+
+  </form>
+
+  <hr>
+
+  <h2>APPOINTMENT SUMMARY</h2>
+  <div id="summaryContent"></div>
+
+  <script>
+
+    // Returns price per session x number of sessions using switch
+    function calculateSubtotal(service, sessions) {
+      let price;
+
+      switch (service) {
+        case "Dental Check-up":
+          price = 850;
+          break;
+        case "Eye Check-up":
+          price = 900;
+          break;
+        case "Physical Exam":
+          price = 800;
+          break;
+        default:
+          return "Service not found";
+      }
+
+      return price * sessions;
+    }
+
+    // Returns discount: 15% if PWD/Senior, 0 if Regular
+    function calculateDiscount(total, custType) {
+      if (custType === "PWD/Senior") {
+        return total * 0.15;
+      } else {
+        return 0;
+      }
+    }
+
+    // Runs when form is submitted, displays summary on page
+    function printSummary() {
+
+      // Get values from form
+      let name = document.getElementById("patientName").value;
+      let idNum = document.getElementById("idNumber").value;
+      let service = document.getElementById("service").value;
+      let sessions = parseInt(document.getElementById("sessions").value);
+      let custType = document.getElementById("custType").value;
+
+      // Calculate subtotal, discount, and total
+      let subtotal = calculateSubtotal(service, sessions);
+      let discount = calculateDiscount(subtotal, custType);
+      let total = subtotal - discount;
+
+      // Get service label using switch
+      let serviceLabel;
+      switch (service) {
+        case "Dental Check-up":
+          serviceLabel = "Dental Check-up (PHP 850)";
+          break;
+        case "Eye Check-up":
+          serviceLabel = "Eye Check-up (PHP 900)";
+          break;
+        case "Physical Exam":
+          serviceLabel = "Physical Exam (PHP 800)";
+          break;
+        default:
+          serviceLabel = service;
+      }
+
+      // Display summary using innerHTML
+      document.getElementById("summaryContent").innerHTML =
+        "Name: " + name + "<br>" +
+        "Grade & Section: " + idNum + "<br>" +
+        "Order: " + serviceLabel + "<br>" +
+        "Quantity: " + sessions + "<br>" +
+        "Subtotal: PHP " + subtotal + "<br>" +
+        "Discount: PHP " + discount + "<br>" +
+        "Total: PHP " + total + "<br><br>" +
+        "Thank you for booking with us!";
+
+      return false; // Prevents page from reloading
+    }
+
+  </script>
+
+</body>
+</html>
